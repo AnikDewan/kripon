@@ -34,9 +34,4 @@ export function bootstrapDatabase() {
       updated_at INTEGER NOT NULL
     );
   `);
-
-  // Categories retired by the fixed-category set map onto their closest replacement.
-  sqlite.execSync(
-    `UPDATE transactions SET category = 'Bills' WHERE category IN ('Digital', 'Utilities')`
-  );
 }
