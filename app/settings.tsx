@@ -83,11 +83,9 @@ export default function SettingsScreen() {
       <ScrollView className="bg-paper" contentContainerStyle={{ gap: 16, paddingHorizontal: 20, paddingBottom: 36, paddingTop: 16 }}>
         <Text className="text-[30px] font-extrabold tracking-[-1.2px] text-ink">Settings</Text>
 
-        <View className="rounded-2xl bg-white p-4">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-[16px] font-bold text-ink">Budgets</Text>
-          </View>
-          <View className="mt-3">
+        <View className="rounded-2xl bg-white p-5">
+          <Text className="text-[16px] font-bold text-ink">Budgets</Text>
+          <View className="mt-4">
             <BudgetSettings />
           </View>
         </View>
