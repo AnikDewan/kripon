@@ -3,7 +3,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { Link, type Href } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CalendarDays, ChevronRight, FileText } from 'lucide-react-native';
+import { FileText } from 'lucide-react-native';
 
 import { CategoryBar } from '@/components/category-bar';
 import { BudgetProgress } from '@/components/budget-progress';
@@ -76,7 +76,7 @@ export default function InsightsScreen() {
           </View>
         </View>
 
-        {activeBudgets.length ? <View className="gap-3"><View className="flex-row items-center justify-between"><SectionHeading title="Budget health" /><Link href={'/budget' as Href} asChild><Pressable className="active:opacity-70"><Text className="text-[12px] font-bold text-teal">Manage</Text></Pressable></Link></View><View className="rounded-2xl bg-white p-4"><BudgetUtilizationChart data={budgetChartData} /></View>{activeBudgets.map((budget) => <View key={budget.id} className="rounded-2xl bg-white p-4"><BudgetProgress cadence={budget.cadence} limit={budget.amountPaise} spent={budgetSpend(items, budget.cadence)} compact /></View>)}</View> : <Link href={'/budget' as Href} asChild><Pressable className="flex-row items-center gap-3 rounded-2xl bg-teal-pale p-4 active:opacity-80"><View className="h-10 w-10 items-center justify-center rounded-full bg-teal"><CalendarDays size={18} color="#FFFFFF" strokeWidth={2} /></View><View className="flex-1"><Text className="text-[14px] font-bold text-ink">Set a spending limit</Text><Text className="mt-1 text-[12px] leading-5 text-ink-muted">Add a weekly or monthly budget to see pacing charts.</Text></View><ChevronRight size={18} color="#116F6B" strokeWidth={2} /></Pressable></Link>}
+        {activeBudgets.length ? <View className="gap-2"><SectionHeading title="Budget health" /><View className="rounded-2xl bg-white p-4"><BudgetUtilizationChart data={budgetChartData} /></View>{activeBudgets.map((budget) => <View key={budget.id} className="rounded-2xl bg-white p-4"><BudgetProgress cadence={budget.cadence} limit={budget.amountPaise} spent={budgetSpend(items, budget.cadence)} compact /></View>)}</View> : <Link href={'/settings' as Href} asChild><Pressable className="flex-row items-center justify-between rounded-2xl bg-white p-4 active:opacity-80"><Text className="text-[14px] font-bold text-ink">Set a weekly or monthly budget</Text><Text className="text-[12px] font-bold text-teal">Add</Text></Pressable></Link>}
 
         {monthlyBudget && monthlyBudgetPace.length ? <View className="gap-3"><SectionHeading title="Monthly budget pace" /><View className="rounded-2xl bg-white p-4"><View><BudgetPaceChart data={monthlyBudgetPace} /></View></View></View> : null}
 

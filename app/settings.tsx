@@ -1,11 +1,12 @@
 import { useSyncExternalStore } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useState } from 'react';
-import { ChevronRight, DatabaseBackup, FileDown, FolderOpen } from 'lucide-react-native';
+import { DatabaseBackup, FileDown, FolderOpen } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { db } from '@/db';
 import { transactions } from '@/db/schema';
+import { BudgetSettings } from '@/components/budget-settings';
 import {
   exportData,
   getDataJobStatus,
@@ -84,8 +85,16 @@ export default function SettingsScreen() {
 
         <View className="rounded-2xl bg-white p-4">
           <View className="flex-row items-center justify-between">
+            <Text className="text-[16px] font-bold text-ink">Budgets</Text>
+          </View>
+          <View className="mt-3">
+            <BudgetSettings />
+          </View>
+        </View>
+
+        <View className="rounded-2xl bg-white p-4">
+          <View className="flex-row items-center justify-between">
             <Text className="text-[16px] font-bold text-ink">Import statement</Text>
-            <ChevronRight size={16} color="#637687" strokeWidth={2} />
           </View>
           <Pressable disabled={isImporting} onPress={() => void runStatementImport()} className={`mt-3 flex-row items-center justify-center gap-2 rounded-xl py-3.5 active:opacity-80 ${isImporting ? 'bg-slate' : 'bg-teal'}`}>
             <FolderOpen size={18} color="#FFFFFF" strokeWidth={2} />

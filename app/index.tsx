@@ -55,13 +55,13 @@ export default function OverviewScreen() {
           </View>
         </View>
 
-        <View className="gap-3">
-          <SectionHeading title="Budget" actionLink={{ label: 'Manage', href: '/budget' }} />
+        <View className="gap-2">
+          <SectionHeading title="Budget" />
           {(() => {
             const cards = (['weekly', 'monthly'] as const).map((cadence) => ({ cadence, budget: budgetByCadence(cadence) })).filter((card) => card.budget);
             if (!cards.length) {
               return (
-                <Link href={'/budget' as Href} asChild>
+                <Link href={'/settings' as Href} asChild>
                   <Pressable className="flex-row items-center justify-between rounded-2xl bg-white p-4 active:opacity-80">
                     <Text className="text-[14px] font-bold text-ink">Set a weekly or monthly budget</Text>
                     <Text className="text-[12px] font-bold text-teal">Add</Text>
@@ -73,11 +73,8 @@ export default function OverviewScreen() {
           })()}
         </View>
 
-        <View className="gap-3">
-          <View className="flex-row items-center justify-between">
-            <SectionHeading title="Recent activity" />
-            <Link href={'/activity' as Href} asChild><Text className="text-[12px] font-bold text-teal">See all</Text></Link>
-          </View>
+        <View className="gap-2">
+          <SectionHeading title="Recent activity" />
           <View className="divide-y divide-line rounded-2xl bg-white px-4">
             {(recent ?? []).map((item) => <TransactionRow key={item.id} item={item} />)}
           </View>
