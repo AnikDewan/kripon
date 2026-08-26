@@ -1,4 +1,3 @@
-import { eq, sql } from 'drizzle-orm';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
@@ -43,10 +42,7 @@ function BudgetRow({ cadence, label, limit }: { cadence: BudgetCadence; label: s
     }).onConflictDoUpdate({ target: budgets.cadence, set: { amountPaise, updatedAt: now } });
   };
 
-  const remove = () => {
-    if (limit === null) return;
-    void db.delete(budgets).where(eq(budgets.cadence, cadence));
-  };
+  const canSave = Boolean(amountToPaise(amount));
 
   return (
     <View className="gap-2">
@@ -67,11 +63,14 @@ function BudgetRow({ cadence, label, limit }: { cadence: BudgetCadence; label: s
             className="flex-1 py-3 text-[15px] font-bold text-ink"
           />
         </View>
-        {limit !== null ? (
-          <Pressable accessibilityLabel={`Remove ${cadence} budget`} onPress={remove} className="rounded-xl bg-mist px-4 py-3 active:opacity-70">
-            <Text className="text-[13px] font-bold text-coral">Clear</Text>
-          </Pressable>
-        ) : null}
+        <Pressable
+          accessibilityLabel={`Save ${cadence} budget`}
+          disabled={!canSave}
+          onPress={() => void save()}
+          className={`rounded-xl px-4 py-3 active:opacity-70 ${canSave ? 'bg-teal' : 'bg-mist'}`}
+        >
+          <Text className={`text-[13px] font-bold ${canSave ? 'text-white' : 'text-ink-faint'}`}>Save</Text>
+        </Pressable>
       </View>
     </View>
   );

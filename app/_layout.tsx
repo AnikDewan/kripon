@@ -6,6 +6,7 @@ import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-c
 import { BarChart3, LayoutDashboard, LucideIcon, ReceiptText, Settings } from 'lucide-react-native';
 
 import { bootstrapDatabase } from '@/db';
+import { IncomingStatementHandler } from '@/components/incoming-statement-handler';
 
 bootstrapDatabase();
 
@@ -17,6 +18,7 @@ const tabOptions = (label: string, Icon: LucideIcon) => ({
 export default function RootLayout() {
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <IncomingStatementHandler />
       <Tabs screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#116F6B',
