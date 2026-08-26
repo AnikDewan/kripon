@@ -1,5 +1,5 @@
 import * as DocumentPicker from 'expo-document-picker';
-import { readAsStringAsync, EncodingType } from 'expo-file-system/legacy';
+import { File } from 'expo-file-system';
 import { extractText, isAvailable } from 'expo-pdf-text-extract';
 import * as XLSX from 'xlsx';
 
@@ -11,11 +11,17 @@ type PickedFile = { uri: string; name: string; mimeType?: string | null };
 const moneyToPaise = (value: unknown) => Math.round(Number(String(value).replace(/[,+₹]/g, '')) * 100);
 const inferCategory = (name: string, tag = '') => {
   const text = `${name} ${tag}`.toLowerCase();
-  if (text.includes('flipkart') || text.includes('shopping')) return 'Shopping';
-  if (text.includes('electric') || text.includes('bill')) return 'Bills';
-  if (text.includes('cashback')) return 'Cashback';
-  if (text.includes('zomato') || text.includes('swiggy') || text.includes('food')) return 'Food & dining';
-  if (text.includes('grocery') || text.includes('instamart')) return 'Groceries';
+  if (text.includes('cashback') || text.includes('refund') || text.includes('reward')) return 'Cashback';
+  if (text.includes('flipkart') || text.includes('amazon') || text.includes('myntra') || text.includes('shopping')) return 'Shopping';
+  if (text.includes('zomato') || text.includes('swiggy') && !text.includes('instamart') || text.includes('restaurant') || text.includes('food') || text.includes('coffee') || text.includes('pizza')) return 'Food & dining';
+  if (text.includes('grocery') || text.includes('instamart') || text.includes('blinkit') || text.includes('zepto') || text.includes('dmart') || text.includes('bigbasket')) return 'Groceries';
+  if (text.includes('uber') || text.includes('ola') || text.includes('rapido') || text.includes('metro') || text.includes('petrol') || text.includes('fuel') || text.includes('irctc')) return 'Transport';
+  if (text.includes('electric') || text.includes('bill') || text.includes('recharge') || text.includes('water') || text.includes('gas') || text.includes('broadband')) return 'Bills';
+  if (text.includes('hospital') || text.includes('pharmacy') || text.includes('clinic') || text.includes('apollo') || text.includes('medicine')) return 'Health';
+  if (text.includes('netflix') || text.includes('spotify') || text.includes('hotstar') || text.includes('prime') || text.includes('bookmyshow') || text.includes('game')) return 'Entertainment';
+  if (text.includes('hotel') || text.includes('flight') || text.includes('trip') || text.includes('tour') || text.includes('makemytrip') || text.includes('airbnb')) return 'Travel';
+  if (text.includes('school') || text.includes('college') || text.includes('course') || text.includes('udemy') || text.includes('coursera') || text.includes('exam fee')) return 'Education';
+  if (text.includes('rent') || text.includes('maintenance') || text.includes('society') || text.includes('broker')) return 'Housing';
   if (text.includes('received') || text.includes('sent') || text.includes('transfer')) return 'Transfers';
   return 'Other';
 };
@@ -53,8 +59,8 @@ export async function parseStatement(file: PickedFile): Promise<{ source: Import
 }
 
 async function parsePaytm(file: PickedFile) {
-  const base64 = await readAsStringAsync(file.uri, { encoding: EncodingType.Base64 });
-  const workbook = XLSX.read(base64, { type: 'base64', cellDates: true });
+  const bytes = new Uint8Array(await new File(file.uri).arrayBuffer());
+  const workbook = XLSX.read(bytes, { type: 'array', cellDates: true });
   const sheet = workbook.Sheets['Passbook Payment History'];
   if (!sheet) throw new Error('No Paytm payment history sheet found.');
   const data = XLSX.utils.sheet_to_json<Record<string, string>>(sheet, { defval: '' });

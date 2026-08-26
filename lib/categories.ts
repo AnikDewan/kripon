@@ -1,30 +1,25 @@
-import { BadgeIndianRupee, CarFront, CircleEllipsis, Coffee, HeartPulse, House, Laptop, ShoppingBag, Utensils } from 'lucide-react-native';
-import type { LucideIcon } from 'lucide-react-native';
+export const OTHER_CATEGORY = 'Other';
 
-export const defaultCategories = ['Food & dining', 'Groceries', 'Shopping', 'Bills', 'Transport', 'Health', 'Transfers', 'Other'];
-
-export const categoryIcons: Record<string, LucideIcon> = {
-  food: Utensils,
-  shopping: ShoppingBag,
-  transport: CarFront,
-  home: House,
-  health: HeartPulse,
-  coffee: Coffee,
-  digital: Laptop,
-  money: BadgeIndianRupee,
-  other: CircleEllipsis,
-};
-
-export const categoryIconOptions = [
-  { key: 'food', label: 'Food' },
-  { key: 'shopping', label: 'Shopping' },
-  { key: 'transport', label: 'Transport' },
-  { key: 'home', label: 'Home' },
-  { key: 'health', label: 'Health' },
-  { key: 'coffee', label: 'Coffee' },
-  { key: 'digital', label: 'Digital' },
-  { key: 'money', label: 'Money' },
-  { key: 'other', label: 'Other' },
+/** Fixed spending categories offered everywhere in the app. */
+export const spendingCategories = [
+  'Food & dining',
+  'Groceries',
+  'Transport',
+  'Bills',
+  'Shopping',
+  'Health',
+  'Entertainment',
+  'Travel',
+  'Education',
+  'Housing',
 ] as const;
 
-export const getCategoryIcon = (key: string) => categoryIcons[key] ?? categoryIcons.other;
+/** Categories a user can pick manually; always ends with Other. */
+export const allCategories: string[] = [...spendingCategories, OTHER_CATEGORY];
+
+/** Ledger-only categories assigned by statement imports; not offered for manual entries. */
+export const TRANSFER_CATEGORY = 'Transfers';
+export const CASHBACK_CATEGORY = 'Cashback';
+
+/** Categories that do not count against budgets. */
+export const budgetExemptCategories = [TRANSFER_CATEGORY];

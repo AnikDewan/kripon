@@ -1,4 +1,5 @@
 import type { BudgetCadence, Transaction } from '@/db/schema';
+import { budgetExemptCategories } from '@/lib/categories';
 
 export const budgetPeriodStart = (cadence: BudgetCadence, now = new Date()) => {
   const start = new Date(now);
@@ -11,10 +12,13 @@ export const budgetPeriodStart = (cadence: BudgetCadence, now = new Date()) => {
   return start;
 };
 
+const isBudgeted = (transaction: Transaction) =>
+  transaction.direction === 'debit' && !budgetExemptCategories.includes(transaction.category);
+
 export const budgetSpend = (transactions: Transaction[], cadence: BudgetCadence, now = new Date()) => {
   const start = budgetPeriodStart(cadence, now).getTime();
   return transactions
-    .filter((transaction) => transaction.direction === 'debit' && transaction.category !== 'Transfers' && transaction.occurredAt.getTime() >= start)
+    .filter((transaction) => isBudgeted(transaction) && transaction.occurredAt.getTime() >= start)
     .reduce((total, transaction) => total + transaction.amountPaise, 0);
 };
 

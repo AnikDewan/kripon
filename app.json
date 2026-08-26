@@ -13,13 +13,6 @@
       "expo-font",
       "expo-sharing"
     ],
-    "extra": {
-      "googleDrive": {
-        "iosClientId": "",
-        "androidClientId": "",
-        "webClientId": ""
-      }
-    },
     "experiments": {
       "typedRoutes": true
     },

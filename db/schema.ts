@@ -22,15 +22,7 @@ export const budgets = sqliteTable('budgets', {
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull(),
 });
 
-export const customCategories = sqliteTable('custom_categories', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull().unique(),
-  icon: text('icon').notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
-});
-
 export type Transaction = typeof transactions.$inferSelect;
 export type NewTransaction = typeof transactions.$inferInsert;
 export type Budget = typeof budgets.$inferSelect;
 export type BudgetCadence = Budget['cadence'];
-export type CustomCategory = typeof customCategories.$inferSelect;

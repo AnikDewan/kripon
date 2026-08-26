@@ -64,10 +64,7 @@ export default function InsightsScreen() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#F3F7F8' }}>
       <ScrollView className="bg-paper" contentContainerStyle={{ gap: 24, paddingHorizontal: 20, paddingBottom: 36, paddingTop: 16 }}>
-        <View>
-          <Text className="text-[30px] font-extrabold tracking-[-1.2px] text-ink">Insights</Text>
-          <Text className="mt-1 text-[13px] leading-5 text-ink-muted">Patterns from your completed UPI payments.</Text>
-        </View>
+        <Text className="text-[30px] font-extrabold tracking-[-1.2px] text-ink">Insights</Text>
 
         <View className="rounded-2xl bg-ink p-5">
           <Text className="text-[11px] font-bold uppercase tracking-[1.4px] text-white-muted">Recorded outflow</Text>
@@ -81,19 +78,17 @@ export default function InsightsScreen() {
 
         {activeBudgets.length ? <View className="gap-3"><View className="flex-row items-center justify-between"><SectionHeading title="Budget health" /><Link href={'/budget' as Href} asChild><Pressable className="active:opacity-70"><Text className="text-[12px] font-bold text-teal">Manage</Text></Pressable></Link></View><View className="rounded-2xl bg-white p-4"><BudgetUtilizationChart data={budgetChartData} /></View>{activeBudgets.map((budget) => <View key={budget.id} className="rounded-2xl bg-white p-4"><BudgetProgress cadence={budget.cadence} limit={budget.amountPaise} spent={budgetSpend(items, budget.cadence)} compact /></View>)}</View> : <Link href={'/budget' as Href} asChild><Pressable className="flex-row items-center gap-3 rounded-2xl bg-teal-pale p-4 active:opacity-80"><View className="h-10 w-10 items-center justify-center rounded-full bg-teal"><CalendarDays size={18} color="#FFFFFF" strokeWidth={2} /></View><View className="flex-1"><Text className="text-[14px] font-bold text-ink">Set a spending limit</Text><Text className="mt-1 text-[12px] leading-5 text-ink-muted">Add a weekly or monthly budget to see pacing charts.</Text></View><ChevronRight size={18} color="#116F6B" strokeWidth={2} /></Pressable></Link>}
 
-        {monthlyBudget && monthlyBudgetPace.length ? <View className="gap-3"><SectionHeading title="Monthly budget pace" /><View className="rounded-2xl bg-white p-4"><Text className="text-[12px] leading-5 text-ink-muted">Your cumulative eligible spend compared with where the monthly limit would be today.</Text><View className="mt-3"><BudgetPaceChart data={monthlyBudgetPace} /></View></View></View> : null}
+        {monthlyBudget && monthlyBudgetPace.length ? <View className="gap-3"><SectionHeading title="Monthly budget pace" /><View className="rounded-2xl bg-white p-4"><View><BudgetPaceChart data={monthlyBudgetPace} /></View></View></View> : null}
 
         {outflows.length ? <>
-          <View className="gap-3"><SectionHeading title="Outflow over time" /><View className="rounded-2xl bg-white p-4"><Text className="text-[12px] leading-5 text-ink-muted">Monthly totals help distinguish a real shift from a one-off expense.</Text><View className="mt-3"><MonthlySpendChart data={monthlySpend} /></View></View></View>
+          <View className="gap-3"><SectionHeading title="Outflow over time" /><View className="rounded-2xl bg-white p-4"><View><MonthlySpendChart data={monthlySpend} /></View></View></View>
 
           {categoryChartData.length ? <View className="gap-3"><SectionHeading title="Where the money goes" /><View className="rounded-2xl bg-white p-4"><CategoryAllocationChart data={categoryChartData} /></View></View> : null}
 
-          <View className="gap-3"><SectionHeading title="Spend by weekday" /><View className="rounded-2xl bg-white p-4"><Text className="text-[12px] leading-5 text-ink-muted">{highDay?.label} is your most expensive recorded day, with {formatMoney((highDay?.amount ?? 0) * 100)} spent.</Text><View className="mt-3"><WeekdaySpendChart data={weekdaySpend} /></View></View></View>
+          <View className="gap-3"><SectionHeading title="Spend by weekday" /><View className="rounded-2xl bg-white p-4"><Text className="text-[12px] leading-5 text-ink-muted">{highDay?.label} is your most expensive day ({formatMoney((highDay?.amount ?? 0) * 100)}).</Text><View className="mt-3"><WeekdaySpendChart data={weekdaySpend} /></View></View></View>
 
           <View className="gap-3"><SectionHeading title="Where you pay" /><View className="gap-4 rounded-2xl bg-white p-4">{sourceSpend.map(({ source, amount }) => <CategoryBar key={source} name={source} amount={amount} share={Math.round((amount / Math.max(total, 1)) * 100)} color={sourceColors[source]} />)}</View></View>
-        </> : <View className="items-center rounded-2xl bg-white px-6 py-12"><View className="h-12 w-12 items-center justify-center rounded-full bg-teal-pale"><FileText size={22} color="#116F6B" strokeWidth={2} /></View><Text className="mt-4 text-[15px] font-bold text-ink">Insights need payment history</Text><Text className="mt-1 text-center text-[12px] leading-5 text-ink-muted">Import a statement or add a payment manually to see your patterns.</Text></View>}
-
-        <Link href={'/import' as Href} asChild><Pressable className="flex-row items-center gap-3 rounded-2xl bg-mist p-4 active:opacity-80"><View className="h-10 w-10 items-center justify-center rounded-full bg-ink"><FileText size={18} color="#FFFFFF" strokeWidth={2} /></View><View className="flex-1"><Text className="text-[14px] font-bold text-ink">Keep this picture current</Text><Text className="mt-1 text-[12px] leading-5 text-ink-muted">Import your next UPI export when the month ends.</Text></View><ChevronRight size={18} color="#637687" strokeWidth={2} /></Pressable></Link>
+        </> : <View className="items-center rounded-2xl bg-white px-6 py-12"><View className="h-12 w-12 items-center justify-center rounded-full bg-teal-pale"><FileText size={22} color="#116F6B" strokeWidth={2} /></View><Text className="mt-4 text-[15px] font-bold text-ink">Insights need payment history</Text><Text className="mt-1 text-center text-[12px] text-ink-muted">Import a statement or add a payment.</Text></View>}
       </ScrollView>
     </SafeAreaView>
   );

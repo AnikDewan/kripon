@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Text, View } from 'react-native';
-import { ArrowLeftRight, CarFront, CircleEllipsis, HeartPulse, ReceiptText, ShoppingBag, ShoppingBasket, Utensils, type LucideIcon } from 'lucide-react-native';
+import { ArrowLeftRight, BookOpen, CarFront, CircleEllipsis, Clapperboard, HeartPulse, House, Plane, ReceiptText, ShoppingBag, ShoppingBasket, Utensils, type LucideIcon } from 'lucide-react-native';
 
 import type { Transaction } from '@/db/schema';
 import { categoryTint, formatDay, formatMoney } from '@/lib/format';
@@ -12,6 +12,10 @@ const categoryIcons: Record<string, LucideIcon> = {
   Bills: ReceiptText,
   Transport: CarFront,
   Health: HeartPulse,
+  Entertainment: Clapperboard,
+  Travel: Plane,
+  Education: BookOpen,
+  Housing: House,
   Transfers: ArrowLeftRight,
   Other: CircleEllipsis,
 };

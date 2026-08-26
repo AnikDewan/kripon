@@ -21,7 +21,7 @@ const demoTransactions = [
   ['2026-06-06T13:54:23', 'WBSEDCL electricity', 42500, 'debit', 'Bills', 'Paytm', '207810502965'],
   ['2026-05-29T20:50:25', 'Chanchal Kumar Pal', 100000, 'debit', 'Transfers', 'Paytm', '307047664350'],
   ['2026-05-29T13:21:20', 'Sanjoy Dewan', 60000, 'credit', 'Transfers', 'Paytm', '614958455963'],
-  ['2026-05-27T08:53:00', 'Google Play recharge', 1000, 'debit', 'Digital', 'GPay', '651375056332'],
+  ['2026-05-27T08:53:00', 'Google Play recharge', 1000, 'debit', 'Bills', 'GPay', '651375056332'],
   ['2026-05-27T08:58:00', 'Arpan Rajak', 2900, 'credit', 'Transfers', 'GPay', '651333977547'],
   ['2026-05-11T22:58:00', 'Chanchal Kumar Pal', 95000, 'debit', 'Transfers', 'GPay', '655869555520'],
 ] as const;
@@ -44,6 +44,8 @@ export function bootstrapDatabase() {
     );
     CREATE UNIQUE INDEX IF NOT EXISTS transactions_reference_unique
       ON transactions(reference) WHERE reference IS NOT NULL;
+    CREATE INDEX IF NOT EXISTS transactions_occurred_at_idx
+      ON transactions(occurred_at DESC);
     CREATE TABLE IF NOT EXISTS budgets (
       id TEXT PRIMARY KEY NOT NULL,
       cadence TEXT NOT NULL UNIQUE,
@@ -51,12 +53,7 @@ export function bootstrapDatabase() {
       created_at INTEGER NOT NULL,
       updated_at INTEGER NOT NULL
     );
-    CREATE TABLE IF NOT EXISTS custom_categories (
-      id TEXT PRIMARY KEY NOT NULL,
-      name TEXT NOT NULL UNIQUE,
-      icon TEXT NOT NULL,
-      created_at INTEGER NOT NULL
-    );
+    DROP TABLE IF EXISTS custom_categories;
   `);
 
   const existing = sqlite.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM transactions');
