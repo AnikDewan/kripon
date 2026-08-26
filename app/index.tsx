@@ -46,7 +46,7 @@ export default function OverviewScreen() {
 
         <View className="overflow-hidden rounded-2xl bg-ink p-5">
           <View className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-teal-shade" />
-          <Text className="text-[11px] font-bold uppercase tracking-[1.4px] text-white-muted">Ledger balance</Text>
+          <Text className="text-[11px] font-bold uppercase tracking-[1.4px] text-white-muted">Balance</Text>
           <Text selectable className="mt-2 text-[38px] font-extrabold tracking-[-1.7px] text-white">{formatCompactMoney(received - paid)}</Text>
           <View className="mt-6 flex-row border-t border-white-line pt-4">
             <View className="flex-1"><Text className="text-[11px] text-white-muted">Received</Text><Text selectable className="mt-1 text-[16px] font-bold text-teal-pale">+{formatMoney(received)}</Text></View>

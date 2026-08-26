@@ -31,7 +31,7 @@ export default function SettingsScreen() {
       const picked = await pickLedgerArchive();
       if (!picked) return;
       Alert.alert(
-        'Replace this ledger?',
+        'Replace your current data?',
         `${picked.fileName} contains ${picked.payload.transactions.length} payments. Current payments and budgets will be replaced.`,
         [
           { text: 'Cancel', style: 'cancel' },

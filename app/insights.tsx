@@ -67,7 +67,7 @@ export default function InsightsScreen() {
         <Text className="text-[30px] font-extrabold tracking-[-1.2px] text-ink">Insights</Text>
 
         <View className="rounded-2xl bg-ink p-5">
-          <Text className="text-[11px] font-bold uppercase tracking-[1.4px] text-white-muted">Recorded outflow</Text>
+          <Text className="text-[11px] font-bold uppercase tracking-[1.4px] text-white-muted">Total spent</Text>
           <Text selectable className="mt-2 text-[36px] font-extrabold tracking-[-1.5px] text-white">{formatCompactMoney(total)}</Text>
           <View className="mt-5 flex-row border-t border-white-line pt-4">
             <View className="flex-1"><Text className="text-[11px] text-white-muted">Typical payment</Text><Text selectable className="mt-1 text-[16px] font-bold text-teal-pale">{formatCompactMoney(Math.round(total / Math.max(outflows.length, 1)))}</Text></View>
@@ -81,7 +81,7 @@ export default function InsightsScreen() {
         {monthlyBudget && monthlyBudgetPace.length ? <View className="gap-3"><SectionHeading title="Monthly budget pace" /><View className="rounded-2xl bg-white p-4"><View><BudgetPaceChart data={monthlyBudgetPace} /></View></View></View> : null}
 
         {outflows.length ? <>
-          <View className="gap-3"><SectionHeading title="Outflow over time" /><View className="rounded-2xl bg-white p-4"><View><MonthlySpendChart data={monthlySpend} /></View></View></View>
+          <View className="gap-3"><SectionHeading title="Spending over time" /><View className="rounded-2xl bg-white p-4"><View><MonthlySpendChart data={monthlySpend} /></View></View></View>
 
           {categoryChartData.length ? <View className="gap-3"><SectionHeading title="Where the money goes" /><View className="rounded-2xl bg-white p-4"><CategoryAllocationChart data={categoryChartData} /></View></View> : null}
 
