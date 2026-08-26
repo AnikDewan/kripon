@@ -1,9 +1,19 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
-import { extractText, isAvailable } from 'expo-pdf-text-extract';
 import * as XLSX from 'xlsx';
 
 import type { NewTransaction } from '@/db/schema';
+
+type PdfExtractor = typeof import('expo-pdf-text-extract');
+
+// Loaded lazily so the native module is only touched when a PDF import is attempted;
+// in Expo Go (no dev build) the module logs a warning the moment it is required.
+let pdfExtractor: Promise<PdfExtractor> | null = null;
+
+const getPdfExtractor = () => {
+  pdfExtractor ??= import('expo-pdf-text-extract');
+  return pdfExtractor;
+};
 
 type ImportSource = 'Paytm' | 'GPay' | 'BHIM';
 type PickedFile = { uri: string; name: string; mimeType?: string | null };
@@ -53,6 +63,7 @@ export async function chooseStatement(): Promise<PickedFile | null> {
 export async function parseStatement(file: PickedFile): Promise<{ source: ImportSource; rows: NewTransaction[] }> {
   const lowerName = file.name.toLowerCase();
   if (lowerName.endsWith('.xlsx')) return { source: 'Paytm', rows: await parsePaytm(file) };
+  const { extractText, isAvailable } = await getPdfExtractor();
   if (!isAvailable()) throw new Error('PDF imports need a development build. Spreadsheet imports work in Expo Go.');
   const text = await extractText(file.uri);
   if (text.includes('Google Pay') || text.includes('Transaction statement period')) {

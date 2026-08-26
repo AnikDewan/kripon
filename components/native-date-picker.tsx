@@ -26,10 +26,8 @@ export function NativeDatePicker({ value, maximumDate, onConfirm, onCancel }: Pr
         mode="date"
         display="default"
         maximumDate={maximumDate}
-        onChange={(event, date) => {
-          if (event.type === 'set' && date) onConfirm(date);
-          else onCancel();
-        }}
+        onValueChange={(_, date) => onConfirm(date)}
+        onDismiss={onCancel}
       />
     );
   }
