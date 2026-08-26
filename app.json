@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Kripon",
+    "slug": "kripon",
+    "scheme": "kripon",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      "expo-document-picker",
+      "expo-sqlite",
+      "expo-font",
+      "expo-sharing"
+    ],
+    "extra": {
+      "googleDrive": {
+        "iosClientId": "",
+        "androidClientId": "",
+        "webClientId": ""
+      }
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "android": {
+      "package": "com.anikdewan.kripon"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anikdewan.kripon"
+    }
+  }
+}
