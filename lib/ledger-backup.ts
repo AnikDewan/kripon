@@ -5,7 +5,7 @@ import * as Sharing from 'expo-sharing';
 
 import { sqlite } from '@/db';
 import { CHECKSUM_ENTRY, createZip, LEDGER_ENTRY, readZipEntry } from './zip';
-import { parseArchive, type ArchiveBudget, type ArchivePayload, type ArchiveTransaction } from './ledger-archive-core';
+import { ARCHIVE_KIND, ARCHIVE_VERSION, parseArchive, type ArchiveBudget, type ArchivePayload, type ArchiveTransaction } from './ledger-archive-core';
 
 const PAGE_SIZE = 2000;
 
@@ -88,8 +88,8 @@ export async function exportLedger(): Promise<File> {
     }
 
     const payload: ArchivePayload = {
-      kind: 'kripon-ledger',
-      version: 2,
+      kind: ARCHIVE_KIND,
+      version: ARCHIVE_VERSION,
       createdAt: new Date().toISOString(),
       transactions,
       budgets: loadBudgets(),
@@ -150,44 +150,51 @@ export async function pickLedgerArchive(): Promise<{ payload: ArchivePayload; fi
 export async function restoreLedger(payload: ArchivePayload) {
   setStatus({ state: 'running', progress: 0, message: 'Restoring your data...' });
   try {
-    sqlite.execSync('DELETE FROM transactions; DELETE FROM budgets;');
-    const insert = sqlite.prepareSync(
-      `INSERT OR REPLACE INTO transactions (id, occurred_at, counterparty, amount_paise, direction, category, source, reference, status, source_file, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    );
-    try {
-      const total = payload.transactions.length;
-      let sinceYield = 0;
-      for (let index = 0; index < total; index++) {
-        const item = payload.transactions[index];
-        insert.executeSync([
-          item.id, item.occurredAt, item.counterparty, item.amountPaise, item.direction,
-          item.category, item.source, item.reference, item.status, item.sourceFile, item.createdAt,
-        ]);
-        if (++sinceYield === PAGE_SIZE) {
-          sinceYield = 0;
-          setStatus({ progress: ((index + 1) / Math.max(total, 1)) * 0.9 });
-          await yieldToUI();
-        }
-      }
-    } finally {
-      insert.finalizeSync();
-    }
-
-    const budgetInsert = sqlite.prepareSync(
-      `INSERT INTO budgets (id, cadence, amount_paise, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
-    );
-    try {
-      for (const item of payload.budgets) {
-        budgetInsert.executeSync([item.id, item.cadence, item.amountPaise, item.createdAt, item.updatedAt]);
-      }
-    } finally {
-      budgetInsert.finalizeSync();
-    }
-
+    await sqlite.withTransactionAsync(async () => {
+      sqlite.execSync('DELETE FROM transactions; DELETE FROM budgets;');
+      await insertTransactions(payload.transactions);
+      insertBudgets(payload.budgets);
+    });
     setStatus({ state: 'done', progress: 1, message: `${payload.transactions.length} payments restored.` });
   } catch (error) {
     setStatus({ state: 'error', progress: 0, message: error instanceof Error ? error.message : 'Restore failed.' });
     throw error;
+  }
+}
+
+async function insertTransactions(items: ArchiveTransaction[]) {
+  const insert = sqlite.prepareSync(
+    `INSERT OR REPLACE INTO transactions (id, occurred_at, counterparty, amount_paise, direction, category, source, reference, status, source_file, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  );
+  try {
+    let sinceYield = 0;
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
+      insert.executeSync([
+        item.id, item.occurredAt, item.counterparty, item.amountPaise, item.direction,
+        item.category, item.source, item.reference, item.status, item.sourceFile, item.createdAt,
+      ]);
+      if (++sinceYield === PAGE_SIZE) {
+        sinceYield = 0;
+        setStatus({ progress: ((index + 1) / Math.max(items.length, 1)) * 0.9 });
+        await yieldToUI();
+      }
+    }
+  } finally {
+    insert.finalizeSync();
+  }
+}
+
+function insertBudgets(items: ArchiveBudget[]) {
+  const insert = sqlite.prepareSync(
+    `INSERT INTO budgets (id, cadence, amount_paise, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
+  );
+  try {
+    for (const item of items) {
+      insert.executeSync([item.id, item.cadence, item.amountPaise, item.createdAt, item.updatedAt]);
+    }
+  } finally {
+    insert.finalizeSync();
   }
 }

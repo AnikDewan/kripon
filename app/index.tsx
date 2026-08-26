@@ -10,11 +10,13 @@ import { TransactionRow } from '@/components/transaction-row';
 import { db } from '@/db';
 import { budgets, transactions } from '@/db/schema';
 import { budgetPeriodStart } from '@/lib/budgets';
+import { budgetExemptCategories } from '@/lib/categories';
 import { formatCompactMoney, formatMoney } from '@/lib/format';
 import type { BudgetCadence } from '@/db/schema';
 
+const exemptCategoriesSql = sql.join(budgetExemptCategories.map((category) => sql`${category}`), sql`, `);
 const spendExpression = (sinceMs: number) =>
-  sql<number>`coalesce(sum(case when direction = 'debit' and category <> 'Transfers' and occurred_at >= ${sinceMs} then amount_paise else 0 end), 0)`;
+  sql<number>`coalesce(sum(case when direction = 'debit' and category not in (${exemptCategoriesSql}) and occurred_at >= ${sinceMs} then amount_paise else 0 end), 0)`;
 
 export default function OverviewScreen() {
   // Aggregates run in SQLite instead of loading every row into JS.

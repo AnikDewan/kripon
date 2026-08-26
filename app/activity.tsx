@@ -68,7 +68,6 @@ export default function ActivityScreen() {
   const { data: totalRows } = useLiveQuery(db.select({ total: count() }).from(transactions).where(where));
   const items = data ?? [];
   const total = totalRows?.[0]?.total ?? 0;
-  const hasMore = offset + PAGE_SIZE < total;
 
   const resetPagination = useCallback(() => setOffset(0), []);
   const renderItem = useCallback(({ item }: { item: Transaction }) => <TransactionRow item={item} />, []);
@@ -174,9 +173,7 @@ export default function ActivityScreen() {
           ItemSeparatorComponent={ItemSeparator}
           ListEmptyComponent={EmptyState}
           onEndReachedThreshold={0.3}
-          onEndReached={() => {
-            if (hasMore) setOffset(offset + PAGE_SIZE);
-          }}
+          onEndReached={() => setOffset((current) => (current + PAGE_SIZE < total ? current + PAGE_SIZE : current))}
         />
       </View>
     </SafeAreaView>

@@ -22,7 +22,7 @@ export default function SettingsScreen() {
       const file = await exportLedger();
       await saveExportToDownloads(file);
     } catch {
-      Alert.alert('Export failed', job.message ?? 'Try again.');
+      Alert.alert('Export failed', getLedgerJobStatus().message ?? 'Try again.');
     }
   };
 
@@ -40,7 +40,7 @@ export default function SettingsScreen() {
             style: 'destructive',
             onPress: () => {
               void restoreLedger(picked.payload).catch(() => {
-                Alert.alert('Import failed', job.message ?? 'Choose another file.');
+                Alert.alert('Import failed', getLedgerJobStatus().message ?? 'Choose another file.');
               });
             },
           },

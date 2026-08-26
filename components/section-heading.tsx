@@ -3,11 +3,10 @@ import { Text, View } from 'react-native';
 
 type Props = {
   title: string;
-  action?: string;
   actionLink?: { label: string; href: Href };
 };
 
-export function SectionHeading({ title, action, actionLink }: Props) {
+export function SectionHeading({ title, actionLink }: Props) {
   return (
     <View className="flex-row items-end justify-between">
       <Text className="text-[19px] font-bold tracking-[-0.45px] text-ink">{title}</Text>
@@ -15,7 +14,7 @@ export function SectionHeading({ title, action, actionLink }: Props) {
         <Link href={actionLink.href} asChild>
           <Text className="pb-0.5 text-[12px] font-bold text-teal">{actionLink.label}</Text>
         </Link>
-      ) : action ? <Text className="pb-0.5 text-[12px] font-bold text-teal">{action}</Text> : null}
+      ) : null}
     </View>
   );
 }

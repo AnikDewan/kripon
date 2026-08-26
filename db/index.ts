@@ -56,6 +56,9 @@ export function bootstrapDatabase() {
     DROP TABLE IF EXISTS custom_categories;
   `);
 
+  // Categories retired by the fixed-category set map onto their closest replacement.
+  sqlite.execSync(`UPDATE transactions SET category = 'Bills' WHERE category IN ('Digital', 'Utilities')`);
+
   const existing = sqlite.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM transactions');
   if ((existing?.count ?? 0) > 0) return;
 

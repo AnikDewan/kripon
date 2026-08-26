@@ -9,20 +9,26 @@ type ImportSource = 'Paytm' | 'GPay' | 'BHIM';
 type PickedFile = { uri: string; name: string; mimeType?: string | null };
 
 const moneyToPaise = (value: unknown) => Math.round(Number(String(value).replace(/[,+₹]/g, '')) * 100);
+const categoryRules: Array<[category: string, keywords: string[]]> = [
+  ['Cashback', ['cashback', 'refund', 'reward']],
+  ['Groceries', ['grocery', 'instamart', 'blinkit', 'zepto', 'dmart', 'bigbasket']],
+  ['Food & dining', ['zomato', 'swiggy', 'restaurant', 'food', 'coffee', 'pizza']],
+  ['Shopping', ['flipkart', 'amazon', 'myntra', 'shopping']],
+  ['Transport', ['uber', 'ola', 'rapido', 'metro', 'petrol', 'fuel', 'irctc']],
+  ['Bills', ['electric', 'bill', 'recharge', 'water', 'gas', 'broadband']],
+  ['Health', ['hospital', 'pharmacy', 'clinic', 'apollo', 'medicine']],
+  ['Entertainment', ['netflix', 'spotify', 'hotstar', 'prime', 'bookmyshow', 'game']],
+  ['Travel', ['hotel', 'flight', 'trip', 'tour', 'makemytrip', 'airbnb']],
+  ['Education', ['school', 'college', 'course', 'udemy', 'coursera', 'exam fee']],
+  ['Housing', ['rent', 'maintenance', 'society', 'broker']],
+  ['Transfers', ['received', 'sent', 'transfer']],
+];
+
 const inferCategory = (name: string, tag = '') => {
   const text = `${name} ${tag}`.toLowerCase();
-  if (text.includes('cashback') || text.includes('refund') || text.includes('reward')) return 'Cashback';
-  if (text.includes('flipkart') || text.includes('amazon') || text.includes('myntra') || text.includes('shopping')) return 'Shopping';
-  if (text.includes('zomato') || text.includes('swiggy') && !text.includes('instamart') || text.includes('restaurant') || text.includes('food') || text.includes('coffee') || text.includes('pizza')) return 'Food & dining';
-  if (text.includes('grocery') || text.includes('instamart') || text.includes('blinkit') || text.includes('zepto') || text.includes('dmart') || text.includes('bigbasket')) return 'Groceries';
-  if (text.includes('uber') || text.includes('ola') || text.includes('rapido') || text.includes('metro') || text.includes('petrol') || text.includes('fuel') || text.includes('irctc')) return 'Transport';
-  if (text.includes('electric') || text.includes('bill') || text.includes('recharge') || text.includes('water') || text.includes('gas') || text.includes('broadband')) return 'Bills';
-  if (text.includes('hospital') || text.includes('pharmacy') || text.includes('clinic') || text.includes('apollo') || text.includes('medicine')) return 'Health';
-  if (text.includes('netflix') || text.includes('spotify') || text.includes('hotstar') || text.includes('prime') || text.includes('bookmyshow') || text.includes('game')) return 'Entertainment';
-  if (text.includes('hotel') || text.includes('flight') || text.includes('trip') || text.includes('tour') || text.includes('makemytrip') || text.includes('airbnb')) return 'Travel';
-  if (text.includes('school') || text.includes('college') || text.includes('course') || text.includes('udemy') || text.includes('coursera') || text.includes('exam fee')) return 'Education';
-  if (text.includes('rent') || text.includes('maintenance') || text.includes('society') || text.includes('broker')) return 'Housing';
-  if (text.includes('received') || text.includes('sent') || text.includes('transfer')) return 'Transfers';
+  for (const [category, keywords] of categoryRules) {
+    if (keywords.some((keyword) => text.includes(keyword))) return category;
+  }
   return 'Other';
 };
 
