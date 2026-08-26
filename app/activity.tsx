@@ -108,9 +108,6 @@ export default function ActivityScreen() {
       <View className="flex-1 bg-paper px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Text className="text-[30px] font-extrabold tracking-[-1.2px] text-ink">Activity</Text>
-          <Link href={'/add-transaction' as Href} asChild>
-            <Pressable accessibilityLabel="Add transaction" className="h-10 w-10 items-center justify-center rounded-full bg-teal active:opacity-80"><Plus size={20} color="#FFFFFF" strokeWidth={2.5} /></Pressable>
-          </Link>
         </View>
 
         <View className="mt-4 flex-row gap-2">
@@ -175,6 +172,11 @@ export default function ActivityScreen() {
           onEndReachedThreshold={0.3}
           onEndReached={() => setOffset((current) => (current + PAGE_SIZE < total ? current + PAGE_SIZE : current))}
         />
+        <Link href={'/add-transaction' as Href} asChild>
+          <Pressable accessibilityRole="button" accessibilityLabel="Add a transaction" className="absolute bottom-5 right-5 items-center justify-center rounded-full bg-teal" style={{ width: 56, height: 56, boxShadow: '0 8px 18px rgba(17, 111, 107, 0.28)' }}>
+            <Plus size={24} color="#FFFFFF" strokeWidth={2.5} />
+          </Pressable>
+        </Link>
       </View>
     </SafeAreaView>
   );

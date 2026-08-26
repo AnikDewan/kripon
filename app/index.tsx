@@ -82,7 +82,7 @@ export default function OverviewScreen() {
             {(recent ?? []).map((item) => <TransactionRow key={item.id} item={item} />)}
           </View>
           {!recent?.length ? (
-            <Link href={'/import' as Href} asChild>
+            <Link href={'/settings' as Href} asChild>
               <Pressable className="items-center rounded-2xl bg-mist py-3 active:opacity-80"><Text className="text-[13px] font-bold text-ink">Import your first statement</Text></Pressable>
             </Link>
           ) : null}

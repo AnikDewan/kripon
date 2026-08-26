@@ -9,28 +9,28 @@ import { ARCHIVE_KIND, ARCHIVE_VERSION, parseArchive, type ArchiveBudget, type A
 
 const PAGE_SIZE = 2000;
 
-export type LedgerJobState = 'idle' | 'running' | 'done' | 'error';
+export type DataJobState = 'idle' | 'running' | 'done' | 'error';
 
-export type LedgerJobStatus = {
-  state: LedgerJobState;
+export type DataJobStatus = {
+  state: DataJobState;
   progress: number;
   message: string | null;
 };
 
-type Listener = (status: LedgerJobStatus) => void;
+type Listener = (status: DataJobStatus) => void;
 
 const listeners = new Set<Listener>();
-let status: LedgerJobStatus = { state: 'idle', progress: 0, message: null };
+let status: DataJobStatus = { state: 'idle', progress: 0, message: null };
 
-const setStatus = (patch: Partial<LedgerJobStatus>) => {
+const setStatus = (patch: Partial<DataJobStatus>) => {
   status = { ...status, ...patch };
   for (const listener of listeners) listener(status);
 };
 
-export const getLedgerJobStatus = () => status;
+export const getDataJobStatus = () => status;
 
 /** Subscribes to export/import job progress; fires immediately with current status. */
-export function subscribeToLedgerJobs(listener: Listener) {
+export function subscribeToJobs(listener: Listener) {
   listeners.add(listener);
   listener(status);
   return () => {
@@ -52,7 +52,7 @@ function loadBudgets(): ArchiveBudget[] {
  * chunks so the UI stays responsive while large ledgers are serialized.
  * Resolves with the created zip file.
  */
-export async function exportLedger(): Promise<File> {
+export async function exportData(): Promise<File> {
   setStatus({ state: 'running', progress: 0, message: 'Collecting your data...' });
   try {
     const total = sqlite.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM transactions')?.count ?? 0;
@@ -132,7 +132,7 @@ async function verifyChecksum(json: string, archive: Uint8Array) {
 }
 
 /** Prompts for a Kripon .zip archive and returns its verified payload, or null when cancelled. */
-export async function pickLedgerArchive(): Promise<{ payload: ArchivePayload; fileName: string } | null> {
+export async function pickImportFile(): Promise<{ payload: ArchivePayload; fileName: string } | null> {
   const result = await DocumentPicker.getDocumentAsync({
     type: ['application/zip', 'application/x-zip-compressed'],
     copyToCacheDirectory: true,
@@ -147,7 +147,7 @@ export async function pickLedgerArchive(): Promise<{ payload: ArchivePayload; fi
 }
 
 /** Replaces the entire database contents with the given archive payload. */
-export async function restoreLedger(payload: ArchivePayload) {
+export async function restoreData(payload: ArchivePayload) {
   setStatus({ state: 'running', progress: 0, message: 'Restoring your data...' });
   try {
     await sqlite.withTransactionAsync(async () => {

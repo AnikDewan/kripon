@@ -28,7 +28,6 @@ export default function RootLayout() {
         <Tabs.Screen name="activity" options={tabOptions('Activity', ReceiptText)} />
         <Tabs.Screen name="insights" options={tabOptions('Insights', BarChart3)} />
         <Tabs.Screen name="settings" options={tabOptions('Settings', Settings)} />
-        <Tabs.Screen name="import" options={{ href: null }} />
         <Tabs.Screen name="add-transaction" options={{ href: null }} />
         <Tabs.Screen name="budget" options={{ href: null }} />
       </Tabs>
