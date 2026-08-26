@@ -4,20 +4,55 @@
     "slug": "kripon",
     "scheme": "kripon",
     "version": "1.0.0",
+    "icon": "./assets/icon.png",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#f3f7f8",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ce01d35f-7de4-44dd-80e4-78fd8bf40541"
+    },
     "plugins": [
       "expo-router",
       "expo-document-picker",
       "expo-sqlite",
       "expo-font",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-updates",
+        {
+          "fallbackToCacheTimeout": 0
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220,
+          "resizeMode": "contain",
+          "backgroundColor": "#f3f7f8"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#116f6b"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "android": {
       "package": "com.anikdewan.kripon",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "monochromeImage": "./assets/adaptive-icon-monochrome.png",
+        "backgroundColor": "#f3f7f8"
+      },
       "intentFilters": [
         {
           "action": "VIEW",
@@ -58,6 +93,10 @@
       "infoPlist": {
         "LSSupportsOpeningDocumentsInPlace": false
       }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "extra": {
       "router": {},
