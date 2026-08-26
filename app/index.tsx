@@ -4,7 +4,7 @@ import { Link, type Href } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BudgetProgress } from '@/components/budget-progress';
+import { BudgetMiniCard } from '@/components/budget-progress';
 import { SectionHeading } from '@/components/section-heading';
 import { TransactionRow } from '@/components/transaction-row';
 import { db } from '@/db';
@@ -69,11 +69,11 @@ export default function OverviewScreen() {
                 </Link>
               );
             }
-            return cards.map(({ cadence, budget }) => (
-              <View key={cadence} className="rounded-2xl bg-white p-4">
-                <BudgetProgress cadence={cadence} limit={budget!.amountPaise} spent={budget!.spent} />
+            return (
+              <View className="flex-row gap-2">
+                {cards.map(({ cadence, budget }) => <BudgetMiniCard key={cadence} cadence={cadence} limit={budget!.amountPaise} spent={budget!.spent} />)}
               </View>
-            ));
+            );
           })()}
         </View>
 
